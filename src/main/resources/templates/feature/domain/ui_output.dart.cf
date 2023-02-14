@@ -1,0 +1,10 @@
+import 'package:clean_framework/clean_framework.dart';
+
+class {{feature_name}}UIOutput extends Output {
+  const {{feature_name}}UIOutput({required this.id});
+
+  final String id;
+
+  @override
+  List<Object> get props => [id];
+}

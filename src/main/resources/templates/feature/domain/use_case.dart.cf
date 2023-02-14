@@ -1,0 +1,19 @@
+import 'package:clean_framework/clean_framework.dart';
+
+import '{{feature_name_snake}}_entity.dart';
+import '{{feature_name_snake}}_ui_output.dart';
+
+class {{feature_name}}UseCase extends UseCase<{{feature_name}}Entity> {
+  {{feature_name}}UseCase()
+        : super(
+            entity: {{feature_name}}Entity(),
+            transformers: [{{feature_name}}UIOutputTransformer()],
+          );
+}
+
+class {{feature_name}}UIOutputTransformer extends OutputTransformer<{{feature_name}}Entity, {{feature_name}}UIOutput> {
+  @override
+  {{feature_name}}UIOutput transform({{feature_name}}Entity entity) {
+    return {{feature_name}}UIOutput(id: entity.id);
+  }
+}

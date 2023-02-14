@@ -1,0 +1,10 @@
+import 'package:clean_framework/clean_framework.dart';
+
+class {{feature_name}}Entity extends Entity {
+  const {{feature_name}}Entity({this.id = ''});
+
+  final String id;
+
+  @override
+  List<Object> get props => [id];
+}
