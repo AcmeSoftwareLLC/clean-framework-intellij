@@ -8,8 +8,9 @@ import java.io.InputStreamReader
 abstract class FeatureGenerator(val featureName: String, val layer: String, val templateName: String) {
     private val template: String
     private val values: HashMap<String, String> = hashMapOf(
-            "feature_name" to featureName,
-            "feature_name_snake" to FeatureGeneratorFactory.snakeCase(featureName),
+        "feature_name" to featureName,
+        "feature_name_snake" to FeatureGeneratorFactory.snakeCase(featureName),
+        "feature_name_camel" to FeatureGeneratorFactory.camelCase(featureName),
     )
 
     init {

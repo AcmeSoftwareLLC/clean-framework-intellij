@@ -1,11 +1,11 @@
 package com.acmesoftware.cleanframework.actions
 
 import com.acmesoftware.cleanframework.generators.feature.FeatureGeneratorFactory
-import com.intellij.lang.java.JavaLanguage
 import com.intellij.openapi.actionSystem.*
 import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.command.CommandProcessor
 import com.intellij.psi.PsiFileFactory
+import com.jetbrains.lang.dart.DartLanguage
 
 class NewFeatureAction : AnAction(), GenerateFeatureDialog.Callback {
     private lateinit var dataContext: DataContext
@@ -38,7 +38,7 @@ class NewFeatureAction : AnAction(), GenerateFeatureDialog.Callback {
                       targetDirectory = featureDirectory.createSubdirectory(it.layer)
                     }
 
-                    val file = PsiFileFactory.getInstance(project).createFileFromText(it.fileName, JavaLanguage.INSTANCE, it.generate())
+                    val file = PsiFileFactory.getInstance(project).createFileFromText(it.fileName, DartLanguage.INSTANCE, it.generate())
                     targetDirectory.add(file)
                 }
             }

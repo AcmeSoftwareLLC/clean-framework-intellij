@@ -1,0 +1,17 @@
+import 'package:clean_framework/clean_framework.dart';
+import 'package:flutter/material.dart';
+
+import '{{feature_name_snake}}_view_model.dart';
+import '{{feature_name_snake}}_presenter.dart';
+
+class {{feature_name}}UI extends UI<{{feature_name}}ViewModel> {
+  {{feature_name}}UI({super.key});
+
+  @override
+  {{feature_name}}Presenter create(WidgetBuilder builder) => {{feature_name}}Presenter(builder: builder);
+
+  @override
+  Widget build(BuildContext context, {{feature_name}}ViewModel viewModel) {
+    return const Placeholder();
+  }
+}
