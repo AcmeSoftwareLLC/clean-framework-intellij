@@ -8,7 +8,7 @@ import java.awt.event.FocusAdapter
 import java.awt.event.FocusEvent
 import javax.swing.*
 
-class GenerateFeatureDialog(private val callback: Callback): DialogWrapper(true) {
+class GenerateFeatureDialog(private val callback: Callback) : DialogWrapper(true) {
     private lateinit var featureNameTextField: JTextField
     private lateinit var errorLabel: JLabel
 
@@ -18,7 +18,7 @@ class GenerateFeatureDialog(private val callback: Callback): DialogWrapper(true)
         setOKButtonText("Generate")
     }
 
-    override fun createCenterPanel(): JComponent? {
+    override fun createCenterPanel(): JComponent {
         val panel = JPanel(BorderLayout())
 
         val nameFieldLabel = JLabel("Feature Name: ")
@@ -28,11 +28,15 @@ class GenerateFeatureDialog(private val callback: Callback): DialogWrapper(true)
 
         featureNameTextField = JTextField()
         featureNameTextField.preferredSize = Dimension(300, 30)
-        featureNameTextField.addFocusListener(object : FocusAdapter() {
-            override fun focusGained(e: FocusEvent?) {
-                errorLabel.text = ""
+        featureNameTextField.addFocusListener(
+            object : FocusAdapter() {
+                override fun focusGained(e: FocusEvent?) {
+                    if (errorLabel.text.isNotBlank()) {
+                        errorLabel.text = ""
+                    }
+                }
             }
-        })
+        )
 
         panel.add(featureNameTextField, BorderLayout.CENTER)
         return panel
@@ -42,7 +46,7 @@ class GenerateFeatureDialog(private val callback: Callback): DialogWrapper(true)
         val featureName = featureNameTextField.text
         val featureNameRegex = Regex("^[A-Z][a-z]+([A-Z][a-z]+)*$")
 
-        if(featureNameRegex.matches(featureName)){
+        if (featureNameRegex.matches(featureName)) {
             super.doOKAction()
 
             callback.onGenerateFeature(featureNameTextField.text)
