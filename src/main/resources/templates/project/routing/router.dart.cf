@@ -1,0 +1,17 @@
+import 'package:clean_framework_router/clean_framework_router.dart';
+import 'package:{{package_name}}/routing/routes.dart';
+import 'package:flutter/material.dart';
+
+class {{package_name_pascal}}Router extends AppRouter<Routes> {
+  @override
+  RouterConfiguration configureRouter() {
+    return RouterConfiguration(
+      routes: [
+        AppRoute(
+          route: Routes.home,
+          builder: (_, __) => const Placeholder(),
+        ),
+      ],
+    );
+  }
+}

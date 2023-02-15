@@ -8,7 +8,7 @@ class Template(templatePath: String) {
     private val template: String
 
     init {
-        val resource = "/templates/$templatePath"
+        val resource = "/templates/$templatePath.cf"
 
         try {
             val resourceStream = this::class.java.getResourceAsStream(resource)!!

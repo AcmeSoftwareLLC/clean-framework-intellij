@@ -1,9 +1,11 @@
 package com.acmesoftware.cleanframework.actions
 
+import com.acmesoftware.cleanframework.utils.Template
 import com.google.common.base.CaseFormat
 import com.intellij.openapi.actionSystem.*
 import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.command.CommandProcessor
+import com.intellij.psi.PsiDirectory
 import com.intellij.psi.PsiFileFactory
 import com.intellij.psi.impl.file.PsiDirectoryFactory
 import com.jetbrains.lang.dart.DartLanguage
@@ -23,15 +25,16 @@ class SetupProjectAction : AnAction() {
         val packageName = PubspecYamlUtil.getDartProjectName(pubspecFile)!!
         val packageNamePascal = CaseFormat.LOWER_UNDERSCORE.to(CaseFormat.UPPER_CAMEL, packageName)
 
+        val packageInfo = hashMapOf(
+            "package_name" to packageName,
+            "package_name_pascal" to packageNamePascal,
+        )
+
         ApplicationManager.getApplication().runWriteAction {
             val runnable = Runnable {
                 val fileFactory = PsiFileFactory.getInstance(project)
                 val libDirectory = PsiDirectoryFactory.getInstance(project).createDirectory(libDir)
-
-                var providersDirectory = libDirectory.findSubdirectory("providers")
-                if (providersDirectory == null) {
-                    providersDirectory = libDirectory.createSubdirectory("providers")
-                }
+                val providersDirectory = findOrCreateDirectory(libDirectory, "providers")
 
                 val providerFiles = listOf(
                     "use_case_providers.dart",
@@ -44,126 +47,17 @@ class SetupProjectAction : AnAction() {
                     }
                 }
 
-                val providersFile = libDirectory.findFile("providers.dart")
-                if (providersFile == null) {
-                    val content = """
-                        export 'package:$packageName/providers/use_case_providers.dart';
-                        export 'package:$packageName/providers/gateway_providers.dart';
-                        export 'package:$packageName/providers/external_interface_providers.dart';
-                    """.trimIndent()
+                createFileFromTemplate(libDirectory, fileFactory, "providers.dart", "project/providers.dart", packageInfo)
 
-                    val file = fileFactory.createFileFromText("providers.dart", DartLanguage.INSTANCE, content)
-                    libDirectory.add(file)
-                }
+                val routingDirectory = findOrCreateDirectory(libDirectory, "routing")
+                createFileFromTemplate(routingDirectory, fileFactory, "${packageName}_router.dart", "project/routing/router.dart", packageInfo)
+                createFileFromTemplate(routingDirectory, fileFactory, "routes.dart", "project/routing/routes.dart", packageInfo)
+                createFileFromTemplate(libDirectory, fileFactory, "routing.dart", "project/routing.dart", packageInfo)
 
-                var routingDirectory = libDirectory.findSubdirectory("routing")
-                if (routingDirectory == null) {
-                    routingDirectory = libDirectory.createSubdirectory("routing")
-                }
+                val appDirectory = findOrCreateDirectory(libDirectory, "app")
+                createFileFromTemplate(appDirectory, fileFactory, "${packageName}_app.dart", "project/app/app.dart", packageInfo)
 
-                val routerFileName = "${packageName}_router.dart"
-                val routerFile = libDirectory.findFile(routerFileName)
-                if (routerFile == null) {
-                    val content = """
-                        import 'package:clean_framework_router/clean_framework_router.dart';
-                        import 'package:$packageName/routing/src/routes.dart';
-                        import 'package:flutter/material.dart';
-
-                        class ${packageNamePascal}Router extends AppRouter<Routes> {
-                          @override
-                          RouterConfiguration configureRouter() {
-                            return RouterConfiguration(
-                              routes: [
-                                AppRoute(
-                                  route: Routes.home,
-                                  builder: (_, __) => const Placeholder(),
-                                ),
-                              ],
-                            );
-                          }
-                        }
-                    """.trimIndent()
-                    val file = fileFactory.createFileFromText(routerFileName, DartLanguage.INSTANCE, content)
-                    routingDirectory.add(file)
-                }
-
-                val routesFileName = "routes.dart"
-                val routesFile = libDirectory.findFile(routesFileName)
-                if (routesFile == null) {
-                    val content = """
-                        import 'package:clean_framework_router/clean_framework_router.dart';
-
-                        enum Routes with RoutesMixin {
-                          home('/');
-
-                          const Routes(this.path);
-
-                          @override
-                          final String path;
-                        }
-                    """.trimIndent()
-                    val file = fileFactory.createFileFromText(routesFileName, DartLanguage.INSTANCE, content)
-                    routingDirectory.add(file)
-                }
-
-                val routingFile = libDirectory.findFile("routing.dart")
-                if (routingFile == null) {
-                    val content = """
-                        export 'package:$packageName/routing/$routerFileName';
-                        export 'package:$packageName/routing/routes.dart';
-                    """.trimIndent()
-
-                    val file = fileFactory.createFileFromText("routing.dart", DartLanguage.INSTANCE, content)
-                    libDirectory.add(file)
-                }
-
-                var appDirectory = libDirectory.findSubdirectory("app")
-                if (appDirectory == null) {
-                    appDirectory = libDirectory.createSubdirectory("app")
-                }
-
-                val appFileName = "${packageName}_app.dart"
-                val appFile = libDirectory.findFile(appFileName)
-                if (appFile == null) {
-                    val content = """
-                        import 'package:clean_framework/clean_framework.dart';
-                        import 'package:clean_framework_router/clean_framework_router.dart';
-                        import 'package:flutter/material.dart';
-                        import 'package:$packageName/routing.dart';
-
-                        class ${packageNamePascal}App extends StatelessWidget {
-                          const ${packageNamePascal}App({super.key});
-
-                          @override
-                          Widget build(BuildContext context) {
-                            return AppProviderScope(
-                              child: AppRouterScope(
-                                create: ${packageNamePascal}Router.new,
-                                builder: (context) {
-                                  return MaterialApp.router(
-                                    title: '$packageName',
-                                    theme: ThemeData(
-                                      colorSchemeSeed: Colors.blue,
-                                      useMaterial3: true,
-                                    ),
-                                    routerConfig: context.router.config,
-                                  );
-                                },
-                              ),
-                            );
-                          }
-                        }
-
-                    """.trimIndent()
-
-                    val file = fileFactory.createFileFromText(appFileName, DartLanguage.INSTANCE, content)
-                    appDirectory.add(file)
-                }
-
-                val featuresDirectory = libDirectory.findSubdirectory("features")
-                if (featuresDirectory == null) {
-                    libDirectory.createSubdirectory("features")
-                }
+                findOrCreateDirectory(libDirectory, "features")
             }
 
             CommandProcessor.getInstance().executeCommand(project, runnable, "Setup Project Structure", null)
@@ -175,6 +69,19 @@ class SetupProjectAction : AnAction() {
             this.dataContext = it
             val presentation = e.presentation
             presentation.isEnabled = true
+        }
+    }
+
+    private fun findOrCreateDirectory(parent: PsiDirectory, directoryName: String): PsiDirectory {
+        return parent.findSubdirectory(directoryName) ?: return parent.createSubdirectory(directoryName)
+    }
+
+    private fun createFileFromTemplate(parent: PsiDirectory, fileFactory: PsiFileFactory, fileName: String, templatePath: String, fillValues: HashMap<String, String>){
+        val providersFile = parent.findFile(fileName)
+        if (providersFile == null) {
+            val content = Template(templatePath).fill(fillValues)
+            val file = fileFactory.createFileFromText(fileName, DartLanguage.INSTANCE, content)
+            parent.add(file)
         }
     }
 }

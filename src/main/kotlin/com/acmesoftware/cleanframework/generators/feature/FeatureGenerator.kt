@@ -9,7 +9,7 @@ abstract class FeatureGenerator(
     val layer: String,
     private val templateName: String
 ) {
-    private val template = Template("feature/$layer/$templateName.dart.cf")
+    private val template = Template("feature/$layer/$templateName.dart")
 
     private val featureNameSnake = CaseFormat.UPPER_CAMEL.to(CaseFormat.LOWER_UNDERSCORE, featureName)
     private val featureNameCamel = CaseFormat.UPPER_CAMEL.to(CaseFormat.LOWER_CAMEL, featureName)

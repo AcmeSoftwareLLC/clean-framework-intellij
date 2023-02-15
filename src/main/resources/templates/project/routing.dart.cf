@@ -1,0 +1,2 @@
+export 'package:{{package_name}}/routing/{{package_name}}_router.dart';
+export 'package:{{package_name}}/routing/routes.dart';
