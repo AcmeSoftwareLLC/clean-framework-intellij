@@ -47,15 +47,39 @@ class SetupProjectAction : AnAction() {
                     }
                 }
 
-                createFileFromTemplate(libDirectory, fileFactory, "providers.dart", "project/providers.dart", packageInfo)
+                createFileFromTemplate(
+                    libDirectory,
+                    fileFactory,
+                    "providers.dart",
+                    "project/providers.dart",
+                    packageInfo
+                )
 
                 val routingDirectory = findOrCreateDirectory(libDirectory, "routing")
-                createFileFromTemplate(routingDirectory, fileFactory, "${packageName}_router.dart", "project/routing/router.dart", packageInfo)
-                createFileFromTemplate(routingDirectory, fileFactory, "routes.dart", "project/routing/routes.dart", packageInfo)
+                createFileFromTemplate(
+                    routingDirectory,
+                    fileFactory,
+                    "${packageName}_router.dart",
+                    "project/routing/router.dart",
+                    packageInfo
+                )
+                createFileFromTemplate(
+                    routingDirectory,
+                    fileFactory,
+                    "routes.dart",
+                    "project/routing/routes.dart",
+                    packageInfo
+                )
                 createFileFromTemplate(libDirectory, fileFactory, "routing.dart", "project/routing.dart", packageInfo)
 
                 val appDirectory = findOrCreateDirectory(libDirectory, "app")
-                createFileFromTemplate(appDirectory, fileFactory, "${packageName}_app.dart", "project/app/app.dart", packageInfo)
+                createFileFromTemplate(
+                    appDirectory,
+                    fileFactory,
+                    "${packageName}_app.dart",
+                    "project/app/app.dart",
+                    packageInfo
+                )
 
                 findOrCreateDirectory(libDirectory, "features")
             }
@@ -76,7 +100,13 @@ class SetupProjectAction : AnAction() {
         return parent.findSubdirectory(directoryName) ?: return parent.createSubdirectory(directoryName)
     }
 
-    private fun createFileFromTemplate(parent: PsiDirectory, fileFactory: PsiFileFactory, fileName: String, templatePath: String, fillValues: HashMap<String, String>){
+    private fun createFileFromTemplate(
+        parent: PsiDirectory,
+        fileFactory: PsiFileFactory,
+        fileName: String,
+        templatePath: String,
+        fillValues: HashMap<String, String>
+    ) {
         val providersFile = parent.findFile(fileName)
         if (providersFile == null) {
             val content = Template(templatePath).fill(fillValues)
