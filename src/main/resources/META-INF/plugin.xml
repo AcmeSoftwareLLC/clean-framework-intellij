@@ -28,7 +28,8 @@
         <group id="com.acmesoftware.cleanframework"
                text="Clean Framework"
                popup="true">
-            <add-to-group group-id="NewGroup" anchor="first"/>
+            <add-to-group group-id="EditorPopupMenu" anchor="first"/>
+            <add-to-group group-id="ProjectViewPopupMenu" anchor="first"/>
 
             <action id="com.acmesoftware.cleanframework.NewFeatureAction"
                     class="com.acmesoftware.cleanframework.actions.NewFeatureAction"
