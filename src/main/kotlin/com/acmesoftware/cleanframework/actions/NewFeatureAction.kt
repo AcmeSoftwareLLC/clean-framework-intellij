@@ -1,6 +1,7 @@
 package com.acmesoftware.cleanframework.actions
 
 import com.acmesoftware.cleanframework.generators.feature.FeatureGeneratorFactory
+import com.google.common.base.CaseFormat
 import com.intellij.openapi.actionSystem.*
 import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.command.CommandProcessor
@@ -35,7 +36,7 @@ class NewFeatureAction : AnAction(), GenerateFeatureDialog.Callback {
 
         ApplicationManager.getApplication().runWriteAction {
             val runnable = Runnable {
-                val featureDirectory = directory.createSubdirectory(FeatureGeneratorFactory.snakeCase(featureName))
+                val featureDirectory = directory.createSubdirectory(CaseFormat.UPPER_CAMEL.to(CaseFormat.LOWER_UNDERSCORE, featureName))
 
                 FeatureGeneratorFactory.getGenerators(packageName, featureName).forEach {
                     var targetDirectory = featureDirectory.findSubdirectory(it.layer)

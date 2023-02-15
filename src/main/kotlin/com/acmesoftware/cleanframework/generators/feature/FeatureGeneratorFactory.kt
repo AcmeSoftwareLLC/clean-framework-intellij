@@ -6,7 +6,6 @@ import com.acmesoftware.cleanframework.generators.feature.domain.UseCaseGenerato
 import com.acmesoftware.cleanframework.generators.feature.presentation.PresenterGenerator
 import com.acmesoftware.cleanframework.generators.feature.presentation.UIGenerator
 import com.acmesoftware.cleanframework.generators.feature.presentation.ViewModelGenerator
-import java.util.*
 
 object FeatureGeneratorFactory {
     fun getGenerators(packageName: String, featureName: String): List<FeatureGenerator> {
@@ -18,13 +17,5 @@ object FeatureGeneratorFactory {
                 UIGenerator(packageName, featureName),
                 PresenterGenerator(packageName, featureName),
         )
-    }
-
-    fun snakeCase(featureName: String): String {
-        return featureName.replace("([a-z])([A-Z]+)".toRegex(), "$1_$2").lowercase(Locale.getDefault())
-    }
-
-    fun camelCase(featureName: String): String {
-        return featureName.replaceFirstChar { it.lowercase(Locale.getDefault()) }
     }
 }
