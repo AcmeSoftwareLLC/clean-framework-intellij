@@ -1,7 +1,7 @@
 import 'package:clean_framework/clean_framework.dart';
 
-import '{{feature_name_snake}}_entity.dart';
-import '{{feature_name_snake}}_ui_output.dart';
+import 'package:{{package_name}}/features/{{feature_name_snake}}/domain/{{feature_name_snake}}_entity.dart';
+import 'package:{{package_name}}/features/{{feature_name_snake}}/domain/{{feature_name_snake}}_ui_output.dart';
 
 class {{feature_name}}UseCase extends UseCase<{{feature_name}}Entity> {
   {{feature_name}}UseCase()

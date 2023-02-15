@@ -6,6 +6,7 @@ import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.command.CommandProcessor
 import com.intellij.psi.PsiFileFactory
 import com.jetbrains.lang.dart.DartLanguage
+import com.jetbrains.lang.dart.util.PubspecYamlUtil
 
 class NewFeatureAction : AnAction(), GenerateFeatureDialog.Callback {
     private lateinit var dataContext: DataContext
@@ -28,11 +29,15 @@ class NewFeatureAction : AnAction(), GenerateFeatureDialog.Callback {
         val view = LangDataKeys.IDE_VIEW.getData(dataContext)
         val directory = view!!.orChooseDirectory!!
 
+
+        val pubspecFile = PubspecYamlUtil.findPubspecYamlFile(project!!, directory.virtualFile)
+        val packageName = PubspecYamlUtil.getDartProjectName(pubspecFile!!)!!
+
         ApplicationManager.getApplication().runWriteAction {
             val runnable = Runnable {
                 val featureDirectory = directory.createSubdirectory(FeatureGeneratorFactory.snakeCase(featureName))
 
-                FeatureGeneratorFactory.getGenerators(featureName).forEach {
+                FeatureGeneratorFactory.getGenerators(packageName, featureName).forEach {
                     var targetDirectory = featureDirectory.findSubdirectory(it.layer)
                     if(targetDirectory == null){
                       targetDirectory = featureDirectory.createSubdirectory(it.layer)

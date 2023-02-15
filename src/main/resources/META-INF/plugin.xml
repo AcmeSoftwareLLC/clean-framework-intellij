@@ -22,6 +22,7 @@
     <depends>com.intellij.modules.platform</depends>
     <depends>com.intellij.modules.java</depends>
     <depends>Dart</depends>
+    <depends>io.flutter</depends>
 
     <actions>
         <group id="com.acmesoftware.cleanframework"

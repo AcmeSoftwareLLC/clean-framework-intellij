@@ -1,15 +1,14 @@
 import 'package:clean_framework/clean_framework.dart';
-import 'package:flutter/material.dart';
 
-import '../domain/{{feature_name_snake}}_ui_output.dart';
-import '../domain/{{feature_name_snake}}_use_case.dart';
-import '{{feature_name_snake}}_view_model.dart';
-import '../../../providers.dart';
+import 'package:{{package_name}}/features/{{feature_name_snake}}/domain/{{feature_name_snake}}_ui_output.dart';
+import 'package:{{package_name}}/features/{{feature_name_snake}}/domain/{{feature_name_snake}}_use_case.dart';
+import 'package:{{package_name}}/features/{{feature_name_snake}}/presentation/{{feature_name_snake}}_view_model.dart';
+import 'package:{{package_name}}/providers.dart';
 
 class {{feature_name}}Presenter extends Presenter<{{feature_name}}ViewModel, {{feature_name}}UIOutput, {{feature_name}}UseCase> {
   {{feature_name}}Presenter({
-    super.key,
     required super.builder,
+    super.key,
   }) : super(provider: {{feature_name_camel}}UseCaseProvider);
 
   @override

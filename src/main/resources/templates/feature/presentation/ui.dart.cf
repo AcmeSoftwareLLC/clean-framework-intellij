@@ -1,8 +1,8 @@
 import 'package:clean_framework/clean_framework.dart';
 import 'package:flutter/material.dart';
 
-import '{{feature_name_snake}}_view_model.dart';
-import '{{feature_name_snake}}_presenter.dart';
+import 'package:{{package_name}}/features/{{feature_name_snake}}/presentation/{{feature_name_snake}}_view_model.dart';
+import 'package:{{package_name}}/features/{{feature_name_snake}}/presentation/{{feature_name_snake}}_presenter.dart';
 
 class {{feature_name}}UI extends UI<{{feature_name}}ViewModel> {
   {{feature_name}}UI({super.key});

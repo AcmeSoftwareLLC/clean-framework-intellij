@@ -2,4 +2,4 @@ package com.acmesoftware.cleanframework.generators.feature.domain
 
 import com.acmesoftware.cleanframework.generators.feature.FeatureGenerator
 
-class UseCaseGenerator(featureName: String): FeatureGenerator(featureName = featureName, layer = "domain", templateName = "use_case")
+class UseCaseGenerator(packageName: String, featureName: String): FeatureGenerator(packageName, featureName, "domain", "use_case")

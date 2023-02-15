@@ -9,14 +9,14 @@ import com.acmesoftware.cleanframework.generators.feature.presentation.ViewModel
 import java.util.*
 
 object FeatureGeneratorFactory {
-    fun getGenerators(featureName: String): List<FeatureGenerator> {
+    fun getGenerators(packageName: String, featureName: String): List<FeatureGenerator> {
         return listOf(
                 EntityGenerator(featureName),
                 UIOutputGenerator(featureName),
-                UseCaseGenerator(featureName),
+                UseCaseGenerator(packageName, featureName),
                 ViewModelGenerator(featureName),
-                UIGenerator(featureName),
-                PresenterGenerator(featureName),
+                UIGenerator(packageName, featureName),
+                PresenterGenerator(packageName, featureName),
         )
     }
 

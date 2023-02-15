@@ -5,9 +5,10 @@ import org.apache.commons.lang.text.StrSubstitutor
 import java.io.InputStreamReader
 
 
-abstract class FeatureGenerator(val featureName: String, val layer: String, val templateName: String) {
+abstract class FeatureGenerator(packageName: String, val featureName: String, val layer: String, private val templateName: String) {
     private val template: String
     private val values: HashMap<String, String> = hashMapOf(
+        "package_name" to packageName,
         "feature_name" to featureName,
         "feature_name_snake" to FeatureGeneratorFactory.snakeCase(featureName),
         "feature_name_camel" to FeatureGeneratorFactory.camelCase(featureName),
@@ -16,7 +17,7 @@ abstract class FeatureGenerator(val featureName: String, val layer: String, val 
     init {
         try {
             val resource = "/templates/feature/$layer/$templateName.dart.cf"
-            val resourceStream = FeatureGenerator::class.java.getResourceAsStream(resource)
+            val resourceStream = FeatureGenerator::class.java.getResourceAsStream(resource)!!
             template = CharStreams.toString(InputStreamReader(resourceStream, Charsets.UTF_8))
         } catch (e: Exception) {
             throw Exception("Could not find template: $layer/$templateName")
