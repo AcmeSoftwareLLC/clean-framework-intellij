@@ -33,8 +33,14 @@
 
             <action id="com.acmesoftware.cleanframework.NewFeatureAction"
                     class="com.acmesoftware.cleanframework.actions.NewFeatureAction"
-                    text="New Feature"
+                    text="New Feature Directory"
                     description="Generate new clean framework feature">
+            </action>
+
+            <action id="com.acmesoftware.cleanframework.SetupProjectAction"
+                    class="com.acmesoftware.cleanframework.actions.SetupProjectAction"
+                    text="Setup Project Structure"
+                    description="Setup basic project structure for clean framework">
             </action>
         </group>
     </actions>
