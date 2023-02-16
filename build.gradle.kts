@@ -4,20 +4,28 @@ plugins {
     id("org.jetbrains.intellij") version "1.13.0"
 }
 
-group = "com.acmesoftware"
-version = "1.0-SNAPSHOT"
+fun properties(key: String) = project.findProperty(key).toString()
+
+group = properties("domain")
+version = properties("pluginVersion")
 
 repositories {
     mavenCentral()
 }
 
-// Configure Gradle IntelliJ Plugin
-// Read more: https://plugins.jetbrains.com/docs/intellij/tools-gradle-intellij-plugin.html
 intellij {
-    version.set("2022.1.4")
+    pluginName.set(properties("pluginName"))
+    version.set(properties("baseVersion"))
     type.set("IC") // Target IDE Platform
 
-    plugins.set(listOf("java", "Kotlin", "io.flutter:72.0.2", "Dart:221.6096"))
+    plugins.set(
+        listOf(
+            "java",
+            "Kotlin",
+            "io.flutter:${properties("flutterVersion")}",
+            "Dart:${properties("dartVersion")}"
+        )
+    )
 }
 
 tasks {
@@ -31,8 +39,8 @@ tasks {
     }
 
     patchPluginXml {
-        sinceBuild.set("221")
-        untilBuild.set("231.*")
+        sinceBuild.set(properties("pluginSinceBuild"))
+        untilBuild.set(properties("pluginUntilBuild"))
     }
 
     signPlugin {
