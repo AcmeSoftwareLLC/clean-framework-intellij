@@ -1,1 +1,1 @@
-# Clean Framework Intellij Plugin
+# Clean Framework IntelliJ Plugin
