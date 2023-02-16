@@ -6,7 +6,7 @@ import 'package:{{package_name}}/features/{{feature_name_snake}}/domain/{{featur
 class {{feature_name}}UseCase extends UseCase<{{feature_name}}Entity> {
   {{feature_name}}UseCase()
         : super(
-            entity: {{feature_name}}Entity(),
+            entity: const {{feature_name}}Entity(),
             transformers: [{{feature_name}}UIOutputTransformer()],
           );
 }

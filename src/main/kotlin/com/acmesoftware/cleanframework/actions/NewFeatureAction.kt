@@ -2,12 +2,21 @@ package com.acmesoftware.cleanframework.actions
 
 import com.acmesoftware.cleanframework.generators.feature.FeatureGeneratorFactory
 import com.google.common.base.CaseFormat
+import com.intellij.notification.Notification
+import com.intellij.notification.NotificationType
+import com.intellij.notification.Notifications
 import com.intellij.openapi.actionSystem.*
 import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.command.CommandProcessor
+import com.intellij.openapi.fileEditor.FileDocumentManager
+import com.intellij.openapi.fileEditor.FileEditorManager
+import com.intellij.openapi.fileEditor.OpenFileDescriptor
+import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.psi.PsiDirectory
+import com.intellij.psi.PsiFile
 import com.intellij.psi.PsiFileFactory
 import com.intellij.psi.impl.file.PsiDirectoryFactory
+import com.intellij.util.IncorrectOperationException
 import com.jetbrains.lang.dart.DartLanguage
 import com.jetbrains.lang.dart.util.PubspecYamlUtil
 
@@ -28,21 +37,50 @@ class NewFeatureAction : AnAction(), GenerateFeatureDialog.Callback {
     }
 
     override fun onGenerateFeature(featureName: String) {
+        val application = ApplicationManager.getApplication()
         val project = CommonDataKeys.PROJECT.getData(dataContext)
         val view = LangDataKeys.IDE_VIEW.getData(dataContext)
-        val directory = view!!.orChooseDirectory!!
 
-        val pubspecFile = PubspecYamlUtil.findPubspecYamlFile(project!!, directory.virtualFile)
+        val focusedVirtualFile = if (view == null) {
+            val editor = LangDataKeys.EDITOR.getData(dataContext)!!
+            FileDocumentManager.getInstance().getFile(editor.document)!!.parent
+        } else {
+            view.orChooseDirectory!!.virtualFile
+        }
+
+        val pubspecFile = PubspecYamlUtil.findPubspecYamlFile(project!!, focusedVirtualFile)
         val libDir = pubspecFile!!.parent.findChild(PubspecYamlUtil.LIB_DIR_NAME)!!
         val packageName = PubspecYamlUtil.getDartProjectName(pubspecFile)!!
 
-        ApplicationManager.getApplication().runWriteAction {
+        application.runWriteAction {
             val runnable = Runnable {
                 val libDirectory = PsiDirectoryFactory.getInstance(project).createDirectory(libDir)
+                val featuresDirectory = libDirectory.findSubdirectory("features")!!
                 val fileFactory = PsiFileFactory.getInstance(project)
 
-                createFeatureDirectory(directory, fileFactory, packageName, featureName)
-                createUseCaseProvider(libDirectory, fileFactory, packageName, featureName)
+                try {
+                    val lastGeneratedFile = createFeatureDirectory(
+                        featuresDirectory, fileFactory, packageName, featureName
+                    )
+                    createUseCaseProvider(libDirectory, fileFactory, packageName, featureName)
+
+                    FileEditorManager.getInstance(project).openTextEditor(
+                        OpenFileDescriptor(project, lastGeneratedFile), true
+                    )
+                } catch (e: IncorrectOperationException) {
+                    e.message?.let { message ->
+                        application.invokeLater {
+                            Notifications.Bus.notify(
+                                Notification(
+                                    "com.acmesoftware.notification",
+                                    "FEATURE ALREADY EXISTS",
+                                    "The feature \"$featureName\" already exists. $message",
+                                    NotificationType.ERROR
+                                )
+                            )
+                        }
+                    }
+                }
             }
 
             CommandProcessor.getInstance().executeCommand(project, runnable, "Generate Feature Directory", null)
@@ -54,19 +92,22 @@ class NewFeatureAction : AnAction(), GenerateFeatureDialog.Callback {
         fileFactory: PsiFileFactory,
         packageName: String,
         featureName: String,
-    ) {
+    ): VirtualFile {
         val featureNameSnake = CaseFormat.UPPER_CAMEL.to(CaseFormat.LOWER_UNDERSCORE, featureName)
         val featureDirectory = directory.createSubdirectory(featureNameSnake)
 
+        lateinit var file: PsiFile
         FeatureGeneratorFactory.getGenerators(packageName, featureName).forEach {
             var targetDirectory = featureDirectory.findSubdirectory(it.layer)
             if (targetDirectory == null) {
                 targetDirectory = featureDirectory.createSubdirectory(it.layer)
             }
 
-            val file = fileFactory.createFileFromText(it.fileName, DartLanguage.INSTANCE, it.generate())
+            file = fileFactory.createFileFromText(it.fileName, DartLanguage.INSTANCE, it.generate())
             targetDirectory.add(file)
         }
+
+        return file.virtualFile
     }
 
     private fun createUseCaseProvider(

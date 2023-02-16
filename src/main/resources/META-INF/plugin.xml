@@ -11,6 +11,8 @@
     <depends>Dart</depends>
     <depends>io.flutter</depends>
 
+    <resource-bundle>messages.CleanFramework</resource-bundle>
+
     <actions>
         <group id="com.acmesoftware.cleanframework"
                text="Clean Framework"
@@ -33,6 +35,6 @@
     </actions>
 
     <extensions defaultExtensionNs="com.intellij">
-
+        <notificationGroup id="com.acmesoftware.notification" displayType="BALLOON" key="notification.group.clean.framework"/>
     </extensions>
 </idea-plugin>

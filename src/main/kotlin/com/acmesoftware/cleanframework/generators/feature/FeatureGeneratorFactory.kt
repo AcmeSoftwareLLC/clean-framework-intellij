@@ -14,8 +14,8 @@ object FeatureGeneratorFactory {
             UIOutputGenerator(featureName),
             UseCaseGenerator(packageName, featureName),
             ViewModelGenerator(featureName),
-            UIGenerator(packageName, featureName),
             PresenterGenerator(packageName, featureName),
+            UIGenerator(packageName, featureName),
         )
     }
 }
