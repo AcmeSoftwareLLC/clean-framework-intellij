@@ -67,6 +67,17 @@ class NewFeatureAction : AnAction(), GenerateFeatureDialog.Callback {
                     FileEditorManager.getInstance(project).openTextEditor(
                         OpenFileDescriptor(project, lastGeneratedFile), true
                     )
+
+                    application.invokeLater {
+                        Notifications.Bus.notify(
+                            Notification(
+                                "com.acmesoftware.notification",
+                                "FEATURE GENERATED",
+                                "The feature \"$featureName\" has been generated successfully.",
+                                NotificationType.INFORMATION,
+                            )
+                        )
+                    }
                 } catch (e: IncorrectOperationException) {
                     e.message?.let { message ->
                         application.invokeLater {
@@ -75,7 +86,7 @@ class NewFeatureAction : AnAction(), GenerateFeatureDialog.Callback {
                                     "com.acmesoftware.notification",
                                     "FEATURE ALREADY EXISTS",
                                     "The feature \"$featureName\" already exists. $message",
-                                    NotificationType.ERROR
+                                    NotificationType.ERROR,
                                 )
                             )
                         }

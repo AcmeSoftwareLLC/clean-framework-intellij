@@ -2,9 +2,13 @@ package com.acmesoftware.cleanframework.actions
 
 import com.acmesoftware.cleanframework.utils.Template
 import com.google.common.base.CaseFormat
+import com.intellij.notification.Notification
+import com.intellij.notification.NotificationType
+import com.intellij.notification.Notifications
 import com.intellij.openapi.actionSystem.*
 import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.command.CommandProcessor
+import com.intellij.openapi.fileEditor.FileDocumentManager
 import com.intellij.psi.PsiDirectory
 import com.intellij.psi.PsiFileFactory
 import com.intellij.psi.impl.file.PsiDirectoryFactory
@@ -15,12 +19,18 @@ class SetupProjectAction : AnAction() {
     private lateinit var dataContext: DataContext
 
     override fun actionPerformed(e: AnActionEvent) {
+        val application = ApplicationManager.getApplication()
         val project = CommonDataKeys.PROJECT.getData(dataContext)
         val view = LangDataKeys.IDE_VIEW.getData(dataContext)
-        val directory = view!!.orChooseDirectory!!
 
+        val focusedVirtualFile = if (view == null) {
+            val editor = LangDataKeys.EDITOR.getData(dataContext)!!
+            FileDocumentManager.getInstance().getFile(editor.document)!!.parent
+        } else {
+            view.orChooseDirectory!!.virtualFile
+        }
 
-        val pubspecFile = PubspecYamlUtil.findPubspecYamlFile(project!!, directory.virtualFile)
+        val pubspecFile = PubspecYamlUtil.findPubspecYamlFile(project!!, focusedVirtualFile)
         val libDir = pubspecFile!!.parent.findChild(PubspecYamlUtil.LIB_DIR_NAME)!!
         val packageName = PubspecYamlUtil.getDartProjectName(pubspecFile)!!
         val packageNamePascal = CaseFormat.LOWER_UNDERSCORE.to(CaseFormat.UPPER_CAMEL, packageName)
@@ -30,7 +40,7 @@ class SetupProjectAction : AnAction() {
             "package_name_pascal" to packageNamePascal,
         )
 
-        ApplicationManager.getApplication().runWriteAction {
+        application.runWriteAction {
             val runnable = Runnable {
                 val fileFactory = PsiFileFactory.getInstance(project)
                 val libDirectory = PsiDirectoryFactory.getInstance(project).createDirectory(libDir)
@@ -82,6 +92,17 @@ class SetupProjectAction : AnAction() {
                 )
 
                 findOrCreateDirectory(libDirectory, "features")
+
+                application.invokeLater {
+                    Notifications.Bus.notify(
+                        Notification(
+                            "com.acmesoftware.notification",
+                            "PROJECT STRUCTURE SETUP",
+                            "Clean Framework project structure has been setup successfully!",
+                            NotificationType.INFORMATION,
+                        )
+                    )
+                }
             }
 
             CommandProcessor.getInstance().executeCommand(project, runnable, "Setup Project Structure", null)
