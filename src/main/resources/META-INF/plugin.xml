@@ -16,6 +16,7 @@
     <actions>
         <group id="com.acmesoftware.cleanframework"
                text="Clean Framework"
+               icon="/icons/clean-framework-small.png"
                popup="true">
             <add-to-group group-id="EditorPopupMenu" anchor="first"/>
             <add-to-group group-id="ProjectViewPopupMenu" anchor="first"/>
@@ -23,12 +24,14 @@
             <action id="com.acmesoftware.cleanframework.NewFeatureAction"
                     class="com.acmesoftware.cleanframework.actions.NewFeatureAction"
                     text="New Feature"
+                    icon="AllIcons.Actions.ModuleDirectory"
                     description="Generate new clean framework feature">
             </action>
 
             <action id="com.acmesoftware.cleanframework.SetupProjectAction"
                     class="com.acmesoftware.cleanframework.actions.SetupProjectAction"
                     text="New Project"
+                    icon="AllIcons.Gutter.Colors"
                     description="Setup basic project structure for clean framework">
             </action>
         </group>
