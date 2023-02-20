@@ -13,7 +13,7 @@ class {{name}}Gateway extends Gateway<{{name}}GatewayOutput, {{request_name}}Req
 
   @override
   {{name}}SuccessInput onSuccess(SuccessResponse response) {
-
+    return const {{name}}SuccessInput();
   }
 }
 
@@ -23,5 +23,5 @@ class {{name}}GatewayOutput extends Output {
 }
 
 class {{name}}SuccessInput extends SuccessInput {
-  {{name}}SuccessInput();
+  const {{name}}SuccessInput();
 }
