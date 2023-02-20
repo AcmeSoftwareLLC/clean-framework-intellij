@@ -1,12 +1,16 @@
-package com.acmesoftware.cleanframework.actions
+package com.acmesoftware.cleanframework.actions.dialogs
 
 import com.intellij.openapi.ui.DialogWrapper
+import com.intellij.ui.DarculaColors
+import com.intellij.ui.JBColor
 import java.awt.BorderLayout
-import java.awt.Color
 import java.awt.Dimension
 import java.awt.event.FocusAdapter
 import java.awt.event.FocusEvent
-import javax.swing.*
+import javax.swing.JComponent
+import javax.swing.JLabel
+import javax.swing.JPanel
+import javax.swing.JTextField
 
 class GenerateFeatureDialog(private val callback: Callback) : DialogWrapper(true) {
     private lateinit var featureNameTextField: JTextField
@@ -49,10 +53,10 @@ class GenerateFeatureDialog(private val callback: Callback) : DialogWrapper(true
         if (featureNameRegex.matches(featureName)) {
             super.doOKAction()
 
-            callback.onGenerateFeature(featureNameTextField.text)
+            callback.onGenerateFeature(featureName)
         } else {
             errorLabel.text = "Feature name should be in PascalCase"
-            errorLabel.foreground = Color(16739176)
+            errorLabel.foreground = JBColor(DarculaColors.RED, DarculaColors.RED)
         }
     }
 

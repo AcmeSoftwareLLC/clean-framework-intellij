@@ -1,5 +1,6 @@
 package com.acmesoftware.cleanframework.actions
 
+import com.acmesoftware.cleanframework.actions.dialogs.GenerateFeatureDialog
 import com.acmesoftware.cleanframework.generators.feature.FeatureGeneratorFactory
 import com.google.common.base.CaseFormat
 import com.intellij.notification.Notification

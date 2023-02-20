@@ -28,6 +28,13 @@
                     description="Generate new clean framework feature">
             </action>
 
+            <action id="com.acmesoftware.cleanframework.NewGatewayAction"
+                    class="com.acmesoftware.cleanframework.actions.NewGatewayAction"
+                    text="New Gateway"
+                    icon="AllIcons.Nodes.Pluginnotinstalled"
+                    description="Generate a new gateway">
+            </action>
+
             <action id="com.acmesoftware.cleanframework.SetupProjectAction"
                     class="com.acmesoftware.cleanframework.actions.SetupProjectAction"
                     text="New Project"
