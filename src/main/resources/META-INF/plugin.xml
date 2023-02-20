@@ -2,9 +2,26 @@
     <id>com.acmesoftware.clean-framework</id>
     <name>Clean Framework</name>
     <vendor email="support@acme-software.com" url="https://www.acmesoftware.com">Acme Software LLC</vendor>
+
     <description><![CDATA[
-    A plugin to generate Clean Framework project and classes.
+    <p>Support for developing Flutter project with Clean Framework package. The plugin generates Clean Framework project and classes.</p>
+
+    <strong>Salient Features:</strong>
+    <li>Project Structure Generator</li>
+    <li>Gateway Generator</li>
+    <li>Feature Directory Generator; also generates corresponding use case provider for the feature</li>
+
+    <br/>
+
+    <p>The Clean Framework package can be found at <a href="https://pub.dev/packages/clean_framework">https://pub.dev/packages/clean_framework</a>.</p>
   ]]></description>
+
+    <change-notes><![CDATA[
+    <ul>
+      <li>v2023.2.21 - Initial release</li>
+    </ul>
+  ]]>
+    </change-notes>
 
     <depends>com.intellij.modules.platform</depends>
     <depends>com.intellij.modules.java</depends>
