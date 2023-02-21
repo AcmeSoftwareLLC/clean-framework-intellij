@@ -53,10 +53,11 @@ class NewFeatureAction : AnAction(), GenerateFeatureDialog.Callback {
         val libDir = pubspecFile!!.parent.findChild(PubspecYamlUtil.LIB_DIR_NAME)!!
         val packageName = PubspecYamlUtil.getDartProjectName(pubspecFile)!!
 
+        val libDirectory = PsiDirectoryFactory.getInstance(project).createDirectory(libDir)
+        val featuresDirectory = libDirectory.findSubdirectory("features")!!
+
         application.runWriteAction {
             val runnable = Runnable {
-                val libDirectory = PsiDirectoryFactory.getInstance(project).createDirectory(libDir)
-                val featuresDirectory = libDirectory.findSubdirectory("features")!!
                 val fileFactory = PsiFileFactory.getInstance(project)
 
                 try {
@@ -117,6 +118,8 @@ class NewFeatureAction : AnAction(), GenerateFeatureDialog.Callback {
 
             file = fileFactory.createFileFromText(it.fileName, DartLanguage.INSTANCE, it.generate())
             targetDirectory.add(file)
+
+            file.virtualFile.refresh(false, false)
         }
 
         return file.virtualFile

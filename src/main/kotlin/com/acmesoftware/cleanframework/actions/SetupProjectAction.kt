@@ -1,5 +1,6 @@
 package com.acmesoftware.cleanframework.actions
 
+import com.acmesoftware.cleanframework.utils.Flutter
 import com.acmesoftware.cleanframework.utils.Template
 import com.google.common.base.CaseFormat
 import com.intellij.notification.Notification
@@ -9,11 +10,19 @@ import com.intellij.openapi.actionSystem.*
 import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.command.CommandProcessor
 import com.intellij.openapi.fileEditor.FileDocumentManager
+import com.intellij.openapi.fileEditor.FileEditorManager
+import com.intellij.openapi.fileEditor.OpenFileDescriptor
+import com.intellij.openapi.fileTypes.PlainTextLanguage
 import com.intellij.psi.PsiDirectory
+import com.intellij.psi.PsiFile
 import com.intellij.psi.PsiFileFactory
 import com.intellij.psi.impl.file.PsiDirectoryFactory
 import com.jetbrains.lang.dart.DartLanguage
 import com.jetbrains.lang.dart.util.PubspecYamlUtil
+import org.jetbrains.kotlin.idea.core.util.toPsiFile
+import org.jetbrains.kotlin.utils.addToStdlib.cast
+import org.yaml.snakeyaml.Yaml
+
 
 class SetupProjectAction : AnAction() {
     private lateinit var dataContext: DataContext
@@ -34,6 +43,7 @@ class SetupProjectAction : AnAction() {
         val libDir = pubspecFile!!.parent.findChild(PubspecYamlUtil.LIB_DIR_NAME)!!
         val packageName = PubspecYamlUtil.getDartProjectName(pubspecFile)!!
         val packageNamePascal = CaseFormat.LOWER_UNDERSCORE.to(CaseFormat.UPPER_CAMEL, packageName)
+
 
         val packageInfo = hashMapOf(
             "package_name" to packageName,
@@ -83,7 +93,7 @@ class SetupProjectAction : AnAction() {
                 createFileFromTemplate(libDirectory, fileFactory, "routing.dart", "project/routing.dart", packageInfo)
 
                 val appDirectory = findOrCreateDirectory(libDirectory, "app")
-                createFileFromTemplate(
+                val appFile = createFileFromTemplate(
                     appDirectory,
                     fileFactory,
                     "${packageName}_app.dart",
@@ -92,6 +102,33 @@ class SetupProjectAction : AnAction() {
                 )
 
                 findOrCreateDirectory(libDirectory, "features")
+
+                pubspecFile.toPsiFile(project)?.also {
+                    val pubspecYamlBuilder = StringBuilder(it.text)
+
+                    val yamlMap = Yaml().load<HashMap<String, Any>>(pubspecFile.inputStream)
+                    val dependencies = yamlMap[PubspecYamlUtil.DEPENDENCIES].cast<HashMap<String, Any>>().keys
+
+                    listOf( "clean_framework_router", "clean_framework").forEach { dep ->
+                        if (!dependencies.contains(dep)) insertDependency(pubspecYamlBuilder, dep)
+                    }
+
+                    val dir = it.parent
+                    val file = fileFactory.createFileFromText(
+                        pubspecFile.name,
+                        PlainTextLanguage.INSTANCE,
+                        pubspecYamlBuilder.toString()
+                    )
+
+                    it.delete()
+                    dir?.add(file)
+
+                    Flutter.getPackages(project, pubspecFile)
+                }
+
+                FileEditorManager.getInstance(project).openTextEditor(
+                    OpenFileDescriptor(project, appFile.virtualFile), true
+                )
 
                 application.invokeLater {
                     Notifications.Bus.notify(
@@ -127,12 +164,20 @@ class SetupProjectAction : AnAction() {
         fileName: String,
         templatePath: String,
         fillValues: HashMap<String, String>
-    ) {
+    ) : PsiFile {
         val providersFile = parent.findFile(fileName)
         if (providersFile == null) {
             val content = Template(templatePath).fill(fillValues)
             val file = fileFactory.createFileFromText(fileName, DartLanguage.INSTANCE, content)
             parent.add(file)
+            return file
         }
+
+        return providersFile
+    }
+
+    private fun insertDependency(builder: StringBuilder, dependency: String) {
+        val insertionIndex = builder.indexOf("\n", builder.indexOf("dependencies:")) + 3
+        builder.insert(insertionIndex, "$dependency:\n  ")
     }
 }
