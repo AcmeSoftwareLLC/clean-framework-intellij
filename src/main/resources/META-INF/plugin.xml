@@ -5,6 +5,7 @@
 
     <description><![CDATA[
     <p>Support for developing Flutter project with Clean Framework package. The plugin generates Clean Framework project and classes.</p>
+    <br/>
 
     <strong>Salient Features:</strong>
     <li>Project Structure Generator</li>
@@ -12,7 +13,6 @@
     <li>Feature Directory Generator; also generates corresponding use case provider for the feature</li>
 
     <br/>
-
     <p>The Clean Framework package can be found at <a href="https://pub.dev/packages/clean_framework">https://pub.dev/packages/clean_framework</a>.</p>
   ]]></description>
 
