@@ -18,8 +18,8 @@
 
     <change-notes><![CDATA[
     <ul>
-      <li>v2023.2.22 - Updated vendor</li>
-      <li>v2023.2.21 - Initial release</li>
+      <li>v2023.2.24 - Adds clean_framework package at project generation</li>
+      <li>v2023.2.23 - Initial release</li>
     </ul>
   ]]>
     </change-notes>
