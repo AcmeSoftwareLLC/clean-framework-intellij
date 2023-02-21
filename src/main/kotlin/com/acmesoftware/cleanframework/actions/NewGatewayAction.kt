@@ -53,7 +53,7 @@ class NewGatewayAction : AnAction(), GenerateGatewayDialog.Callback {
             val runnable = Runnable {
                 val fileFactory = PsiFileFactory.getInstance(project)
                 val directory = PsiDirectoryFactory.getInstance(project).createDirectory(adapterVirtualFile)
-                val fileName = "${CaseFormat.UPPER_CAMEL.to(CaseFormat.LOWER_CAMEL, name)}_gateway.dart"
+                val fileName = "${CaseFormat.UPPER_CAMEL.to(CaseFormat.LOWER_UNDERSCORE, name)}_gateway.dart"
                 val fillValues = hashMapOf(
                     "name" to name,
                     "request_name" to requestName,
