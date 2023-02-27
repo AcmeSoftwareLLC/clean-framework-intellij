@@ -1,0 +1,17 @@
+import 'package:{{package_name}}/features/{{feature_name_snake}}/presentation/{{feature_name_snake}}_ui.dart';
+import 'package:{{package_name}}/features/{{feature_name_snake}}/presentation/{{feature_name_snake}}_view_model.dart';
+import 'package:clean_framework_test/clean_framework_test.dart';
+import 'package:flutter_test/flutter_test.dart';
+
+void main() {
+  group('{{feature_name}}UI tests |', () {
+    uiTest<{{feature_name}}ViewModel>(
+      'example',
+      ui: {{feature_name}}UI(),
+      viewModel: const {{feature_name}}ViewModel(id: 'test'),
+      verify: (tester) async {
+        expect(find.text('test'), findsOneWidget);
+      },
+    );
+  });
+}

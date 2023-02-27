@@ -1,6 +1,7 @@
 package com.acmesoftware.cleanframework.actions
 
 import com.acmesoftware.cleanframework.actions.dialogs.GenerateFeatureDialog
+import com.acmesoftware.cleanframework.generators.feature.FeatureGenerator
 import com.acmesoftware.cleanframework.generators.feature.FeatureGeneratorFactory
 import com.google.common.base.CaseFormat
 import com.intellij.notification.Notification
@@ -62,8 +63,23 @@ class NewFeatureAction : AnAction(), GenerateFeatureDialog.Callback {
 
                 try {
                     val lastGeneratedFile = createFeatureDirectory(
-                        featuresDirectory, fileFactory, packageName, featureName
+                        featuresDirectory,
+                        fileFactory,
+                        featureName,
+                        FeatureGeneratorFactory.getGenerators(packageName, featureName)
                     )
+
+                    val root = libDirectory.parent!!
+                    val testDirectory = findOrCreateDirectory(root, "test")
+                    val featuresTestDirectory = findOrCreateDirectory(testDirectory, "features")
+
+                    createFeatureDirectory(
+                        featuresTestDirectory,
+                        fileFactory,
+                        featureName,
+                        FeatureGeneratorFactory.getTestGenerators(packageName, featureName)
+                    )
+
                     createUseCaseProvider(libDirectory, fileFactory, packageName, featureName)
 
                     FileEditorManager.getInstance(project).openTextEditor(
@@ -103,18 +119,15 @@ class NewFeatureAction : AnAction(), GenerateFeatureDialog.Callback {
     private fun createFeatureDirectory(
         directory: PsiDirectory,
         fileFactory: PsiFileFactory,
-        packageName: String,
         featureName: String,
+        generators: List<FeatureGenerator>,
     ): VirtualFile {
         val featureNameSnake = CaseFormat.UPPER_CAMEL.to(CaseFormat.LOWER_UNDERSCORE, featureName)
         val featureDirectory = directory.createSubdirectory(featureNameSnake)
 
         lateinit var file: PsiFile
-        FeatureGeneratorFactory.getGenerators(packageName, featureName).forEach {
-            var targetDirectory = featureDirectory.findSubdirectory(it.layer)
-            if (targetDirectory == null) {
-                targetDirectory = featureDirectory.createSubdirectory(it.layer)
-            }
+        generators.forEach {
+            val targetDirectory = findOrCreateDirectory(featureDirectory, it.layer)
 
             file = fileFactory.createFileFromText(it.fileName, DartLanguage.INSTANCE, it.generate())
             targetDirectory.add(file)
@@ -162,5 +175,9 @@ class NewFeatureAction : AnAction(), GenerateFeatureDialog.Callback {
             it.delete()
             providersDirectory.add(file)
         }
+    }
+
+    private fun findOrCreateDirectory(parent: PsiDirectory, directoryName: String): PsiDirectory {
+        return parent.findSubdirectory(directoryName) ?: return parent.createSubdirectory(directoryName)
     }
 }

@@ -9,6 +9,10 @@ class {{feature_name}}UseCase extends UseCase<{{feature_name}}Entity> {
             entity: const {{feature_name}}Entity(),
             transformers: [{{feature_name}}UIOutputTransformer()],
           );
+
+  void updateId(String id) {
+    entity = entity.copyWith(id: id);
+  }
 }
 
 class {{feature_name}}UIOutputTransformer extends OutputTransformer<{{feature_name}}Entity, {{feature_name}}UIOutput> {

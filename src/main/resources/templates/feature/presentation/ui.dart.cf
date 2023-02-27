@@ -12,6 +12,10 @@ class {{feature_name}}UI extends UI<{{feature_name}}ViewModel> {
 
   @override
   Widget build(BuildContext context, {{feature_name}}ViewModel viewModel) {
-    return const Placeholder();
+    return Scaffold(
+      body: Center(
+        child: Text(viewModel.id),
+      ),
+    );
   }
 }
