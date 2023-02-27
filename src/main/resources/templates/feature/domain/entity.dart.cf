@@ -9,7 +9,7 @@ class {{feature_name}}Entity extends Entity {
   List<Object> get props => [id];
 
   @override
-  TestEntity copyWith({String? id}) {
-    return TestEntity(id: id ?? this.id);
+  {{feature_name}}Entity copyWith({String? id}) {
+    return {{feature_name}}Entity(id: id ?? this.id);
   }
 }
