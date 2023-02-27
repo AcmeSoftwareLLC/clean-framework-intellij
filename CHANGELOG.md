@@ -2,7 +2,7 @@
 
 ## [Unreleased]
 ### Fixed
-- Bug Fixes
+- Added default `copyWith` override to generated Entity class.
 
 ## [2023.2.23] - 2023-02-23
 
