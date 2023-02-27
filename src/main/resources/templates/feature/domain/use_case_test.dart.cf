@@ -14,12 +14,12 @@ void main() {
         useCase.updateId('test');
       },
       expect: () => [
-        {{feature_name}}UIOutput(id: 'test'),
+        const {{feature_name}}UIOutput(id: 'test'),
       ],
       verify: (useCase) {
         expect(
           useCase.debugEntity,
-          {{feature_name}}Entity(id: 'test'),
+          const {{feature_name}}Entity(id: 'test'),
         );
       },
     );

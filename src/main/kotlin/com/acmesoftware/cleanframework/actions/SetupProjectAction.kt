@@ -108,9 +108,14 @@ class SetupProjectAction : AnAction() {
 
                     val yamlMap = Yaml().load<HashMap<String, Any>>(pubspecFile.inputStream)
                     val dependencies = yamlMap[PubspecYamlUtil.DEPENDENCIES].cast<HashMap<String, Any>>().keys
+                    val devDependencies = yamlMap[PubspecYamlUtil.DEV_DEPENDENCIES].cast<HashMap<String, Any>>().keys
 
-                    listOf( "clean_framework_router", "clean_framework").forEach { dep ->
+                    listOf("clean_framework_router", "clean_framework").forEach { dep ->
                         if (!dependencies.contains(dep)) insertDependency(pubspecYamlBuilder, dep)
+                    }
+                    val clearFrameworkTestDep = "clean_framework_test"
+                    if (!devDependencies.contains(clearFrameworkTestDep)) {
+                        insertDependency(pubspecYamlBuilder, clearFrameworkTestDep, true)
                     }
 
                     val dir = it.parent
@@ -164,7 +169,7 @@ class SetupProjectAction : AnAction() {
         fileName: String,
         templatePath: String,
         fillValues: HashMap<String, String>
-    ) : PsiFile {
+    ): PsiFile {
         val providersFile = parent.findFile(fileName)
         if (providersFile == null) {
             val content = Template(templatePath).fill(fillValues)
@@ -176,8 +181,8 @@ class SetupProjectAction : AnAction() {
         return providersFile
     }
 
-    private fun insertDependency(builder: StringBuilder, dependency: String) {
-        val insertionIndex = builder.indexOf("\n", builder.indexOf("dependencies:")) + 3
+    private fun insertDependency(builder: StringBuilder, dependency: String, isDev: Boolean = false) {
+        val insertionIndex = builder.indexOf("\n", builder.indexOf("${if (isDev) "dev_" else ""}dependencies:")) + 3
         builder.insert(insertionIndex, "$dependency:\n  ")
     }
 }
