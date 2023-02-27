@@ -4,10 +4,7 @@ import com.acmesoftware.cleanframework.generators.feature.domain.EntityGenerator
 import com.acmesoftware.cleanframework.generators.feature.domain.UIOutputGenerator
 import com.acmesoftware.cleanframework.generators.feature.domain.UseCaseGenerator
 import com.acmesoftware.cleanframework.generators.feature.domain.UseCaseTestGenerator
-import com.acmesoftware.cleanframework.generators.feature.presentation.PresenterGenerator
-import com.acmesoftware.cleanframework.generators.feature.presentation.PresenterTestGenerator
-import com.acmesoftware.cleanframework.generators.feature.presentation.UIGenerator
-import com.acmesoftware.cleanframework.generators.feature.presentation.ViewModelGenerator
+import com.acmesoftware.cleanframework.generators.feature.presentation.*
 
 object FeatureGeneratorFactory {
     fun getGenerators(packageName: String, featureName: String): List<FeatureGenerator> {
@@ -25,6 +22,7 @@ object FeatureGeneratorFactory {
         return listOf(
             UseCaseTestGenerator(packageName, featureName),
             PresenterTestGenerator(packageName, featureName),
+            UITestGenerator(packageName, featureName),
         )
     }
 }
