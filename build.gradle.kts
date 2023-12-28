@@ -1,12 +1,14 @@
+import org.jetbrains.changelog.Changelog
 import org.jetbrains.changelog.markdownToHTML
 
 fun properties(key: String) = project.findProperty(key).toString()
+fun environment(key: String) = providers.environmentVariable(key)
 
 plugins {
     id("java")
-    id("org.jetbrains.kotlin.jvm") version "1.8.0"
-    id("org.jetbrains.intellij") version "1.13.0"
-    id("org.jetbrains.changelog") version "2.0.0"
+    alias(libs.plugins.kotlin)
+    alias(libs.plugins.gradleIntelliJPlugin)
+    alias(libs.plugins.changelog)
 }
 
 
@@ -17,21 +19,28 @@ repositories {
     mavenCentral()
 }
 
-kotlin {
-    jvmToolchain(11)
+dependencies {
+    implementation(libs.annotations)
 }
 
-intellij {
-    pluginName.set(properties("pluginName"))
-    version.set(properties("platformVersion"))
-    type.set(properties("platformType")) // Target IDE Platform
+kotlin {
+    @Suppress("UnstableApiUsage")
+    jvmToolchain {
+        languageVersion = JavaLanguageVersion.of(17)
+        vendor = JvmVendorSpec.JETBRAINS
+    }}
 
-    plugins.set(properties("platformPlugins").split(',').map(String::trim).filter(String::isNotEmpty))
+intellij {
+    pluginName = properties("pluginName")
+    version = properties("platformVersion")
+    type = properties("platformType")
+
+    plugins = properties("platformPlugins").split(',').map(String::trim).filter(String::isNotEmpty)
 }
 
 changelog {
-    groups.set(emptyList())
-    repositoryUrl.set(properties("pluginRepositoryUrl"))
+    groups.empty()
+    repositoryUrl = properties("pluginRepositoryUrl")
 }
 
 tasks {
@@ -44,36 +53,37 @@ tasks {
         sinceBuild.set(properties("pluginSinceBuild"))
         untilBuild.set(properties("pluginUntilBuild"))
 
-        pluginDescription.set(
-            file("README.md").readText().lines().run {
-                val start = "<!-- Plugin description -->"
-                val end = "<!-- Plugin description end -->"
+        pluginDescription = providers.fileContents(layout.projectDirectory.file("README.md")).asText.map {
+            val start = "<!-- Plugin description -->"
+            val end = "<!-- Plugin description end -->"
 
+            with (it.lines()) {
                 if (!containsAll(listOf(start, end))) {
                     throw GradleException("Plugin description section not found in README.md:\n$start ... $end")
                 }
-                subList(indexOf(start) + 1, indexOf(end))
-            }.joinToString("\n").let { markdownToHTML(it) }
-        )
+                subList(indexOf(start) + 1, indexOf(end)).joinToString("\n").let(::markdownToHTML)
+            }
+        }
 
-        changeNotes.set(provider {
+        changeNotes = provider {
             with(changelog) {
                 renderItem(
                     getOrNull(properties("pluginVersion"))
                         ?: runCatching { getLatest() }.getOrElse { getUnreleased() },
-                    org.jetbrains.changelog.Changelog.OutputType.HTML,
+                    Changelog.OutputType.HTML,
                 )
             }
-        })
+        }
     }
 
     signPlugin {
-        certificateChain.set(System.getenv("CERTIFICATE_CHAIN"))
-        privateKey.set(System.getenv("PRIVATE_KEY"))
-        password.set(System.getenv("PRIVATE_KEY_PASSWORD"))
+        certificateChain = environment("CERTIFICATE_CHAIN")
+        privateKey = environment("PRIVATE_KEY")
+        password = environment("PRIVATE_KEY_PASSWORD")
     }
 
     publishPlugin {
-        token.set(System.getenv("PUBLISH_TOKEN"))
+        dependsOn("patchChangelog")
+        token = environment("PUBLISH_TOKEN")
     }
 }

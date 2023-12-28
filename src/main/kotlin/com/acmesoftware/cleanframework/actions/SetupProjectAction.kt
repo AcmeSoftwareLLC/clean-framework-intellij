@@ -20,6 +20,7 @@ import com.intellij.psi.impl.file.PsiDirectoryFactory
 import com.jetbrains.lang.dart.DartLanguage
 import com.jetbrains.lang.dart.util.PubspecYamlUtil
 import org.jetbrains.kotlin.idea.core.util.toPsiFile
+import org.jetbrains.kotlin.utils.addToStdlib.UnsafeCastFunction
 import org.jetbrains.kotlin.utils.addToStdlib.cast
 import org.yaml.snakeyaml.Yaml
 
@@ -27,6 +28,7 @@ import org.yaml.snakeyaml.Yaml
 class SetupProjectAction : AnAction() {
     private lateinit var dataContext: DataContext
 
+    @OptIn(UnsafeCastFunction::class)
     override fun actionPerformed(e: AnActionEvent) {
         val application = ApplicationManager.getApplication()
         val project = CommonDataKeys.PROJECT.getData(dataContext)
@@ -184,5 +186,9 @@ class SetupProjectAction : AnAction() {
     private fun insertDependency(builder: StringBuilder, dependency: String, isDev: Boolean = false) {
         val insertionIndex = builder.indexOf("\n", builder.indexOf("${if (isDev) "dev_" else ""}dependencies:")) + 3
         builder.insert(insertionIndex, "$dependency:\n  ")
+    }
+
+    override fun getActionUpdateThread(): ActionUpdateThread {
+        return ActionUpdateThread.EDT
     }
 }

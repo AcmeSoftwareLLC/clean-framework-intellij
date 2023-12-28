@@ -1,7 +1,8 @@
 # Clean Framework Changelog
 
 ## [Unreleased]
-### Fixed
+### Added
+- Added support for Android Studio Iguana.
 - Added default `copyWith` override to generated Entity class.
 - Added test file generators at feature generation.
 
