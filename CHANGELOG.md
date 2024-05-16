@@ -1,10 +1,12 @@
 # Clean Framework Changelog
 
-## [2024.5.1] - 2023-12-28
+## [2024.5.1] - 2024-05-16
+
 ### Added
 - Added support for Android Studio Koala.
 
 ## [2024.1.1] - 2023-12-28
+
 ### Added
 - Added support for Android Studio Iguana.
 - Added default `copyWith` override to generated Entity class.
