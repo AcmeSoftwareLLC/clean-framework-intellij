@@ -3,6 +3,7 @@
 ## [Unreleased]
 
 ### Added
+- Support for clean_framework v4.
 - Added support for Android Studio Koala.
 
 ## [2024.1.1] - 2023-12-28

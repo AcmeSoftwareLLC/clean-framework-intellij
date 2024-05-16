@@ -1,5 +1,5 @@
 import 'package:{{package_name}}/features/{{feature_name_snake}}/domain/{{feature_name_snake}}_entity.dart';
-import 'package:{{package_name}}/features/{{feature_name_snake}}/domain/{{feature_name_snake}}_ui_output.dart';
+import 'package:{{package_name}}/features/{{feature_name_snake}}/domain/{{feature_name_snake}}_domain_model.dart';
 import 'package:{{package_name}}/features/{{feature_name_snake}}/domain/{{feature_name_snake}}_use_case.dart';
 import 'package:{{package_name}}/providers.dart';
 import 'package:clean_framework_test/clean_framework_test.dart';
@@ -7,14 +7,14 @@ import 'package:flutter_test/flutter_test.dart';
 
 void main() {
   group('{{feature_name}}UseCase tests |', () {
-    useCaseTest<{{feature_name}}UseCase, {{feature_name}}Entity, {{feature_name}}UIOutput>(
+    useCaseTest<{{feature_name}}UseCase, {{feature_name}}Entity, {{feature_name}}UIDomainModel>(
       'example',
       provider: {{feature_name_camel}}UseCaseProvider,
       execute: (useCase) {
         useCase.updateId('test');
       },
       expect: () => [
-        const {{feature_name}}UIOutput(id: 'test'),
+        const {{feature_name}}UIDomainModel(id: 'test'),
       ],
       verify: (useCase) {
         expect(

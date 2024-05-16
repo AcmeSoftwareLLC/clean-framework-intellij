@@ -16,7 +16,6 @@ class {{package_name_pascal}}App extends StatelessWidget {
             title: '{{package_name}}',
             theme: ThemeData(
               colorSchemeSeed: Colors.blue,
-              useMaterial3: true,
             ),
             routerConfig: context.router.config,
           );

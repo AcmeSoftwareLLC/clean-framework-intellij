@@ -1,27 +1,27 @@
 import 'package:clean_framework/clean_framework.dart';
 
-class {{name}}Gateway extends Gateway<{{name}}GatewayOutput, {{request_name}}Request, SuccessResponse, {{name}}SuccessInput> {
+class {{name}}Gateway extends Gateway<{{name}}DomainModel, {{request_name}}Request, SuccessResponse, {{name}}SuccessDomainInput> {
   @override
-  {{request_name}}Request buildRequest({{name}}GatewayOutput output) {
+  {{request_name}}Request buildRequest({{name}}DomainModel model) {
     return {{request_name}}Request();
   }
 
   @override
-  FailureInput onFailure(FailureResponse failureResponse) {
-    return FailureInput(message: failureResponse.message);
+  FailureDomainInput onFailure(FailureResponse failureResponse) {
+    return FailureDomainInput(message: failureResponse.message);
   }
 
   @override
-  {{name}}SuccessInput onSuccess(SuccessResponse response) {
-    return const {{name}}SuccessInput();
+  {{name}}SuccessDomainInput onSuccess(SuccessResponse response) {
+    return const {{name}}SuccessDomainInput();
   }
 }
 
-class {{name}}GatewayOutput extends Output {
+class {{name}}DomainModel extends DomainModel {
   @override
   List<Object?> get props => [];
 }
 
-class {{name}}SuccessInput extends SuccessInput {
-  const {{name}}SuccessInput();
+class {{name}}SuccessDomainInput extends SuccessDomainInput {
+  const {{name}}SuccessDomainInput();
 }

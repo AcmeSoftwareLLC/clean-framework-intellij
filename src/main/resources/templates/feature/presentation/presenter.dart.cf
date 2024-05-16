@@ -1,11 +1,11 @@
 import 'package:clean_framework/clean_framework.dart';
 
-import 'package:{{package_name}}/features/{{feature_name_snake}}/domain/{{feature_name_snake}}_ui_output.dart';
+import 'package:{{package_name}}/features/{{feature_name_snake}}/domain/{{feature_name_snake}}_domain_model.dart';
 import 'package:{{package_name}}/features/{{feature_name_snake}}/domain/{{feature_name_snake}}_use_case.dart';
 import 'package:{{package_name}}/features/{{feature_name_snake}}/presentation/{{feature_name_snake}}_view_model.dart';
 import 'package:{{package_name}}/providers.dart';
 
-class {{feature_name}}Presenter extends Presenter<{{feature_name}}ViewModel, {{feature_name}}UIOutput, {{feature_name}}UseCase> {
+class {{feature_name}}Presenter extends Presenter<{{feature_name}}ViewModel, {{feature_name}}UIDomainModel, {{feature_name}}UseCase> {
   {{feature_name}}Presenter({
     required super.builder,
     super.key,
@@ -14,7 +14,7 @@ class {{feature_name}}Presenter extends Presenter<{{feature_name}}ViewModel, {{f
   @override
   {{feature_name}}ViewModel createViewModel(
     {{feature_name}}UseCase useCase,
-    {{feature_name}}UIOutput output,
+    {{feature_name}}UIDomainModel output,
   ) {
     return {{feature_name}}ViewModel(id: output.id);
   }

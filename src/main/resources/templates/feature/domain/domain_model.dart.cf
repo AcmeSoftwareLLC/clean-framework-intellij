@@ -1,7 +1,7 @@
 import 'package:clean_framework/clean_framework.dart';
 
-class {{feature_name}}UIOutput extends Output {
-  const {{feature_name}}UIOutput({required this.id});
+class {{feature_name}}UIDomainModel extends DomainModel {
+  const {{feature_name}}UIDomainModel({required this.id});
 
   final String id;
 

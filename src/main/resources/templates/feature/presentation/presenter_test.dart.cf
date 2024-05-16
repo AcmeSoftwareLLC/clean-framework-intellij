@@ -1,4 +1,4 @@
-import 'package:{{package_name}}/features/{{feature_name_snake}}/domain/{{feature_name_snake}}_ui_output.dart';
+import 'package:{{package_name}}/features/{{feature_name_snake}}/domain/{{feature_name_snake}}_domain_model.dart';
 import 'package:{{package_name}}/features/{{feature_name_snake}}/domain/{{feature_name_snake}}_use_case.dart';
 import 'package:{{package_name}}/features/{{feature_name_snake}}/presentation/{{feature_name_snake}}_presenter.dart';
 import 'package:{{package_name}}/features/{{feature_name_snake}}/presentation/{{feature_name_snake}}_view_model.dart';
@@ -8,7 +8,7 @@ import 'package:flutter_test/flutter_test.dart';
 
 void main() {
   group('{{feature_name}}Presenter tests |', () {
-    presenterTest<{{feature_name}}ViewModel, {{feature_name}}UIOutput, {{feature_name}}UseCase>(
+    presenterTest<{{feature_name}}ViewModel, {{feature_name}}UIDomainModel, {{feature_name}}UseCase>(
       'example',
       create: (builder) => {{feature_name}}Presenter(builder: builder),
       overrides: [
