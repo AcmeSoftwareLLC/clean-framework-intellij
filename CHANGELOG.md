@@ -1,5 +1,9 @@
 # Clean Framework Changelog
 
+## [2024.5.1] - 2023-12-28
+### Added
+- Added support for Android Studio Koala.
+
 ## [2024.1.1] - 2023-12-28
 ### Added
 - Added support for Android Studio Iguana.
